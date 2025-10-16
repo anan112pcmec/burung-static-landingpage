@@ -1,13 +1,14 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "../styles/global.css";
-import { SiNextdotjs, SiReact, SiTailwindcss, SiTypescript } from "react-icons/si";
 import { useEffect, useState, useRef, JSX } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import LogoLoop from "./LogoLoop";
 import { Autoplay, FreeMode } from "swiper/modules";
 import "swiper/swiper.css"
-import { FaCircle, FaInstagram, FaLinkedin, FaTrophy, FaTwitter } from "react-icons/fa";
-import { FaCircleDot, FaTriangleExclamation } from "react-icons/fa6";
+import { FaArchive, FaBarcode, FaCalendar, FaCalendarAlt, FaChartBar, FaCircle, FaComment, FaFileArchive, FaHeart, FaInfo, FaInstagram, FaLinkedin, FaMale, FaShare, FaStar, FaTrophy, FaTwitter } from "react-icons/fa";
+import { FaAudible, FaCircleDot, FaSortUp, FaTriangleExclamation } from "react-icons/fa6";
+import CardSwap, { Card } from "./CardSwap";
+import { map } from "astro:schema";
+import { Props } from "astro";
 
 const imageLogos = [
   { src: "https://www.bi.go.id/id/SiteAssets/bi-b.png", alt: "Company 1", href: "https://company1.com" },
@@ -17,26 +18,238 @@ const imageLogos = [
   { src: "https://1000logos.net/wp-content/uploads/2022/08/JT-Express-Logo-500x281.png", alt: "J&T", href: "https://company3.com" },
 ];
 
-export const Navbar = () => {
-	return (
-		<div style={{ fontFamily: "'Inter', sans-serif" }}>
-			<nav className="flex flex-wrap items-center justify-between w-full h-auto md:h-[100px] px-6 md:px-12 py-4 bg-white">
-				<div className="flex items-center font-sans">
-					<span className="text-xl md:text-2xl font-semibold font-sans text-gray-800 ml-2 md:ml-4">Burung App</span>
-				</div>
 
-				{/* Tombol kanan */}
-				<div className="flex items-center gap-4 md:gap-8 mt-4 md:mt-0">
-					<button className="bg-white text-black font-semibold">Log in?</button>
-					<button className="p-2 md:p-3 text-white bg-neutral-800 font-semibold rounded-lg">Sign Up</button>
-				</div>
-			</nav>
-			<hr className="border-slate-200" />
-		</div>
-	);
+export const Navbar = () => {
+  const [hidden, setHidden] = useState(false); // untuk kontrol sembunyi / muncul
+  const [lastScroll, setLastScroll] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScroll = window.scrollY;
+
+      // kalau scroll ke bawah, sembunyikan
+      if (currentScroll > lastScroll && currentScroll > 80) {
+        setHidden(true);
+      } else {
+        setHidden(false);
+      }
+
+      setLastScroll(currentScroll);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScroll]);
+
+  return (
+    <div
+      onMouseEnter={() => setHidden(false)} // kalau dihover, muncul lagi
+      onMouseLeave={() => {
+        if (window.scrollY > 80) setHidden(true); // kalau udah discroll jauh, boleh sembunyi lagi
+      }}
+      style={{ fontFamily: "'Inter', sans-serif" }}
+      className={`fixed top-0 left-0 w-full z-50 transition-transform duration-500 ${
+        hidden ? "-translate-y-[100%]" : "translate-y-0"
+      }`}
+    >
+      <nav className="flex flex-wrap items-center justify-between w-full h-auto md:h-[80px] px-6 md:px-12 py-4 bg-white shadow-sm">
+        <div className="flex items-center font-sans">
+          <span className="text-xl md:text-2xl font-semibold text-gray-800 ml-2 md:ml-4">
+            burung
+          </span>
+        </div>
+
+        <div className="flex items-center gap-4 md:gap-8 mt-4 md:mt-0">
+          <button className="bg-white text-black font-semibold hover:text-neutral-500 transition">
+            Log in?
+          </button>
+          <button className="p-2 md:p-3 text-white bg-neutral-800 hover:bg-neutral-700 font-semibold rounded-lg transition">
+            Sign Up
+          </button>
+        </div>
+      </nav>
+      <hr className="border-slate-200" />
+    </div>
+  );
 };
 
+interface PropsBarangCard {
+  nama: string;
+  harga: number;
+  deskripsi: string;
+  brand: string;
+  sku: string;
+  stok: number;
+  kategori: string;
+  tanggal_dibuat: string;
+  gambar: string;
+  rating: number; 
+}
+
+const data: PropsBarangCard[] = [{
+  nama: "Sepatu Adidas Samba",
+  harga: 1500000,
+  deskripsi: "Sepatu Adidas klasik dengan desain retro dan bahan kulit premium.",
+  brand: "Adidas",
+  sku: "ADS-SAMBA-001",
+  stok: 15,
+  kategori: "Sepatu Pria",
+  tanggal_dibuat: "2025-10-15",
+  rating: 4.8,
+  gambar: "data:image/jpeg;base64,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"
+},
+{
+    nama: "Kaos Uniqlo Oversized",
+    harga: 199000,
+    deskripsi: "Kaos oversized berbahan katun lembut untuk tampilan kasual modern.",
+    brand: "Uniqlo",
+    sku: "UNQ-OVR-002",
+    stok: 40,
+    kategori: "Pakaian Pria",
+    tanggal_dibuat: "2025-09-10",
+    rating: 4.5,
+    gambar: "https://image.uniqlo.com/UQ/ST3/AsianCommon/imagesgoods/472520/item/goods_00_472520_3x4.jpg?width=600",
+  },
+  {
+    nama: "Tas Ransel Eiger 25L",
+    harga: 850000,
+    deskripsi: "Tas ransel tangguh dengan kapasitas 25 liter untuk aktivitas outdoor.",
+    brand: "Eiger",
+    sku: "EGR-RNSL-003",
+    stok: 12,
+    kategori: "Peralatan Outdoor",
+    tanggal_dibuat: "2025-08-25",
+    rating: 4.7,
+    gambar: "https://d1yutv2xslo29o.cloudfront.net/product/variant/photo/15024eb8-c6a9-44f8-9ab7-651341878b83.jpg",
+  },
+  {
+    nama: "Jam Tangan Casio Vintage",
+    harga: 650000,
+    deskripsi: "Jam tangan digital retro dengan desain klasik dan tahan air.",
+    brand: "Casio",
+    sku: "CSI-VNTG-004",
+    stok: 25,
+    kategori: "Aksesoris",
+    tanggal_dibuat: "2025-07-30",
+    rating: 4.6,
+    gambar: "https://img.ncrsport.com/img/storage/large/Mq-24-1Eldf-1.jpg",
+  },
+  {
+    nama: "Headphone Sony WH-CH520",
+    harga: 1250000,
+    deskripsi: "Headphone dengan daya tahan baterai hingga 50 jam dan kualitas suara premium.",
+    brand: "Sony",
+    sku: "SNY-WHCH520-005",
+    stok: 20,
+    kategori: "Elektronik",
+    tanggal_dibuat: "2025-10-05",
+    rating: 4.9,
+    gambar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvMfym9Ony1noiv9eZ0zsPfPHHBNxH7J-95w&s",
+  },
+];
+
+
 export const Hero1 = () => {
+	const CardBarang = ({data}: {data:PropsBarangCard}) => {
+	return (
+		<div className="bg-white overflow-y-auto grid grid-cols-[30%_70%] overflow-hidden">
+		<div className="border-r border-slate-300 grid grid-rows-2">
+			<div className="rounded-xl pt-5">
+				<div className="w-full h-28 overflow-hidden rounded-lg"> {/* wadah dengan ukuran tetap */}
+					<img
+					src={data.gambar}
+					alt={data.nama}
+					className="w-full h-full object-cover rounded-lg"
+					/>
+				</div>
+			</div>
+
+
+			{/* Ikon Aksi */}
+			<div className="border-t border-slate-300 grid grid-rows-2 p-2">
+			{[
+				[<FaHeart className="group-hover:text-pink-500 transition-colors duration-200" />, <FaComment className="group-hover:text-sky-500 transition-colors duration-200" />],
+				[<FaShare className="group-hover:text-green-500 transition-colors duration-200" />, <FaArchive className="group-hover:text-amber-600 transition-colors duration-200" />],
+			].map((row, i) => (
+				<div key={i} className="grid grid-cols-2">
+				{row.map((icon, j) => (
+					<div key={j} className="flex items-center justify-center text-center">
+					<div className="group border border-slate-300 rounded-lg p-3 hover:shadow-sm transition">
+						{icon}
+					</div>
+					</div>
+				))}
+				</div>
+			))}
+			</div>
+		</div>
+
+		<div className="grid grid-rows-[50%_50%] w-full">
+			<div className="p-3 w-full">
+			<div className="flex items-center text-neutral-600">
+				<FaCircleDot />
+				<span className="ml-2 text-neutral-800 font-medium">
+				{data.brand} — {data.sku}
+				</span>
+			</div>
+
+			<span className="block text-2xl font-bold text-neutral-900 font-sans mt-1">
+				{data.nama}
+			</span>
+
+			<div className="flex items-center space-x-2 mt-1 mb-2">
+				<FaBarcode />
+				<span className="text-xl font-light text-neutral-800 font-sans">
+				Rp.{data.harga}
+				</span>
+			</div>
+
+			<span className="text-xs text-neutral-600 font-sans leading-snug">
+				{data.deskripsi}
+			</span>
+			</div>
+
+			{/* Detail Barang */}
+			<div className="p-3 border-t border-slate-200 w-full">
+				<div className="flex items-center gap-2 text-neutral-700 mb-3">
+					<FaAudible className="text-lg" />
+					<span className="text-base font-medium font-sans">Detail</span>
+				</div>
+
+				<div className="grid grid-rows-2 gap-3 text-neutral-700 font-sans">
+					{/* Baris 1 */}
+					<div className="grid grid-cols-2 gap-2">
+					<div className="flex items-center gap-2">
+						<FaChartBar className="text-neutral-500 text-sm" />
+						<span className="text-sm font-medium">Stok: {data.stok}</span>
+					</div>
+					<div className="flex items-center gap-2">
+						<FaStar className="text-yellow-400 text-sm" />
+						<span className="text-sm font-medium">Rate: {data.rating}</span>
+					</div>
+					</div>
+
+					{/* Baris 2 */}
+					<div className="grid grid-cols-2 gap-2">
+					<div className="flex items-center gap-2">
+						<FaCalendarAlt className="text-neutral-500 text-sm" />
+						<span className="text-sm font-medium">Rilis: {data.tanggal_dibuat}</span>
+					</div>
+					<div className="flex items-center gap-2">
+						<FaMale className="text-sky-500 text-sm" />
+						<span className="text-sm font-medium">Kategori: {data.kategori}</span>
+					</div>
+					</div>
+				</div>
+				<div className="mt-8  pt-4 text-neutral-400 text-xs text-center">
+					&copy; 2025 Burung. All rights reserved.
+				</div>
+			</div>
+
+		</div>
+		</div>
+	);
+	};
 	return (
 		<div style={{ fontFamily: "'Inter', sans-serif" }} className="w-full min-h-[calc(100vh-100px)] grid grid-cols-1 md:grid-cols-2 py-10 px-6 md:px-16 font-sans">
 			{/* Kolom kiri */}
@@ -64,21 +277,61 @@ export const Hero1 = () => {
 
 			{/* Kolom kanan */}
 			<div className="flex justify-center items-center mt-8 md:mt-0">
-				<div className="border border-slate-200 rounded-xl w-full max-w-[800px] md:max-w-[800px] h-[450px] md:h-[400px] bg-white shadow-sm overflow-hidden">
-					{/* Header mini ala window */}
-					<div className="h-[40px] flex items-center px-4 border-b border-slate-200 bg-slate-50">
-						<div className="flex items-center gap-2">
-							<div className="w-3 h-3 rounded-full bg-red-400"></div>
-							<div className="w-3 h-3 rounded-full bg-yellow-400"></div>
-							<div className="w-3 h-3 rounded-full bg-green-400"></div>
+				 <CardSwap
+					cardDistance={70}
+					verticalDistance={70}
+					delay={5000}
+					pauseOnHover={true}
+				>
+					<Card>
+						<div className="grid grid-rows-[10%_90%] h-full w-full border border-slate-200 rounded-t-xl shadow-sm overflow-hidden">
+						<div className="bg-neutral-50 border-b border-slate-200 flex items-center px-4">
+							<span className="text-neutral-700 font-medium text-sm">Top Brands Product</span>
 						</div>
-					</div>
 
-					{/* Konten gambar */}
-					<div className="flex justify-center items-center h-full w-full p-4">
-						<img src="src/assets/LogoBurung.svg" alt="Logo Burung" className="w-auto h-full max-h-[300px] object-contain" />
-					</div>
-				</div>
+						<div className="w-[500px] h-[200px]">
+							<Swiper
+								modules={[FreeMode, Autoplay]}
+									spaceBetween={20}
+									slidesPerView={1}
+									freeMode={true}             // bisa digeser bebas
+									loop={true}                 // loop terus
+									speed={2000}                 // kecepatan animasi geser (ms)
+									autoplay={{
+										delay: 0,                 // tanpa jeda
+										disableOnInteraction: false,
+										pauseOnMouseEnter: true
+									}}
+									allowTouchMove={false}       // nonaktifkan drag manual
+									className="mySwiper space-x-2">
+									{data.map((val: PropsBarangCard, index: number) => (
+									<SwiperSlide>
+										<CardBarang key={index} data={val} />
+									</SwiperSlide>
+								))}
+							</Swiper>
+						</div>
+						</div>
+
+					</Card>
+
+					<Card>
+						<div className="grid grid-rows-[10%_90%] h-full w-full border border-slate-200 rounded-t-xl shadow-sm overflow-hidden">
+						<div className="bg-neutral-50 border-b border-slate-200 flex items-center px-4">
+							<span className="text-neutral-700 font-medium text-sm">Our Services</span>
+						</div>
+						</div>
+					</Card>
+
+					<Card>
+						<div className="grid grid-rows-[10%_90%] h-full w-full border border-slate-200 rounded-t-xl shadow-sm overflow-hidden">
+						<div className="bg-neutral-50 border-b border-slate-200 flex items-center px-4">
+							<span className="text-neutral-700 font-medium text-sm">Overview</span>
+						</div>
+						</div>
+					</Card>
+					
+				</CardSwap>
 			</div>
 		</div>
 	);
@@ -107,7 +360,7 @@ export const Hero3 = () => {
 			<div className="w-full grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
 				{/* Kiri */}
 				<div className="space-y-6">
-					<h2 className="text-neutral-800 text-3xl font-[700]">UI Clean Super Cepat</h2>
+					<h2 className="text-neutral-800 text-3xl font-sans font-medium">UI Clean Super Cepat</h2>
 
 					<p className="text-neutral-500 text-lg font-semibold">Kami tidak bertele-tele dengan animasi berat dan verbose.</p>
 
@@ -173,7 +426,7 @@ export const Hero3 = () => {
 
 				{/* Kanan */}
 				<div className="space-y-6">
-					<h2 className="text-neutral-800 text-3xl font-[700] font-sans" style={{ fontFamily: "'Inter', sans-serif" }}>Tanpa Data Verbose</h2>
+					<h2 className="text-neutral-800 text-3xl font-sans font-medium">Tanpa Data Verbose</h2>
 
 					<p className="text-neutral-500 text-lg font-medium">Kami menyajikan data cepat, aktual, dan ringkas, sehingga setiap keputusan belanja kamu jadi mudah dan tepat.</p>
 
@@ -197,8 +450,8 @@ export const Hero4 = () => {
 	return (
 		<div style={{ fontFamily: "'Inter', sans-serif" }} className="w-full px-6 md:px-24 py-16 grid grid-cols-1 md:grid-cols-2 gap-10 items-center font-sans">
 			{/* Kiri */}
-			<div className="text-3xl md:text-5xl font-bold text-neutral-800 text-center" style={{ fontFamily: "'Inter', sans-serif" }}>
-				<h2 className="leading-tight">
+			<div className="text-3xl md:text-5xl font-bold text-neutral-800 text-center" >
+				<h2 className="leading-tight font-sans">
 					Langkah Nya Cukup Mudah
 				</h2>
 			</div>
@@ -296,13 +549,13 @@ export const Hero5 = () => {
 	return (
 		<div style={{ fontFamily: "'Inter', sans-serif" }} className="px-30 py-10 mt-20">
 			<div className="text-center">
-				<h1 className="text-neutral-800 text-4xl font-bold">"Keep it simple. Fly fast."</h1>
+				<h1 className="text-neutral-800 text-5xl font-bold font-sans">"Keep it simple. Fly fast."</h1>
 				<br />
 				<span className="text-neutral-400 text-lg">Filosofi kami</span>
 			</div>
 
 			<div className="mt-8">
-				<span className="text-4xl font-semibold font-sans text-neutral-800 mt-5 mb-2">Testimoni</span>
+				<span className="text-4xl font-bold font-sans text-neutral-800 mt-5 mb-2">Testimoni</span>
 				<br />
                 <br />
 				<span className="text-neutral-500 text-lg">Ini yang mereka bilang soal burung</span>
@@ -515,12 +768,12 @@ export const Heroes = () => {
 
 export const Footer = () => {
   return (
-    <div className="bg-neutral-50 text-neutral-800 px-16 py-10 font-sans">
+    <div className="bg-neutral-50 text-neutral-800 px-16 py-10 font-sans mt-10">
       <div className="grid md:grid-cols-2 gap-8">
         {/* Kiri: Logo & Deskripsi */}
         <div className="space-y-4">
           <div>
-            <span className="text-xl font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>Burung 2025</span>
+            <span className="text-2xl font-semibold font-sans">Burung 2025</span>
             <p className="text-neutral-500 text-sm mt-1">
               Temukan produk yang kamu cari, bandingkan dengan mudah, dan dapatkan tanpa drama.
             </p>
@@ -533,7 +786,7 @@ export const Footer = () => {
         </div>
 
         {/* Kanan: Links */}
-        <div className="grid grid-cols-3 gap-6 text-sm text-neutral-500">
+        <div className="grid grid-cols-3 text-sm text-neutral-500 pl-50 width-[500px]">
           <div>
             <h3 className="text-base font-medium mb-2 text-neutral-800">Features</h3>
             <div className="space-y-1">
