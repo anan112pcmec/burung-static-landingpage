@@ -7,8 +7,7 @@ import "swiper/swiper.css"
 import { FaArchive, FaBarcode, FaCalendar, FaCalendarAlt, FaChartBar, FaCircle, FaComment, FaFileArchive, FaHeart, FaInfo, FaInstagram, FaLinkedin, FaMale, FaShare, FaStar, FaTrophy, FaTwitter } from "react-icons/fa";
 import { FaAudible, FaCircleDot, FaSortUp, FaTriangleExclamation } from "react-icons/fa6";
 import CardSwap, { Card } from "./CardSwap";
-import { map } from "astro:schema";
-import { Props } from "astro";
+import CustomerServices from "../assets/Illustration/Customer Support.json"
 
 const imageLogos = [
   { src: "https://www.bi.go.id/id/SiteAssets/bi-b.png", alt: "Company 1", href: "https://company1.com" },
@@ -27,7 +26,6 @@ export const Navbar = () => {
     const handleScroll = () => {
       const currentScroll = window.scrollY;
 
-      // kalau scroll ke bawah, sembunyikan
       if (currentScroll > lastScroll && currentScroll > 80) {
         setHidden(true);
       } else {
@@ -316,11 +314,21 @@ export const Hero1 = () => {
 					</Card>
 
 					<Card>
-						<div className="grid grid-rows-[10%_90%] h-full w-full border border-slate-200 rounded-t-xl shadow-sm overflow-hidden">
+					<div className="grid grid-rows-[10%_90%] h-full w-full border border-slate-200 rounded-t-xl shadow-sm overflow-hidden">
 						<div className="bg-neutral-50 border-b border-slate-200 flex items-center px-4">
-							<span className="text-neutral-700 font-medium text-sm">Our Services</span>
+						<span className="text-neutral-700 font-medium text-sm">Our Services</span>
+						</div>
+						<div className="grid grid-cols-[35%_65%] p-2">
+						<div className="text-sm font-sans text-neutral-500">
+							<span>
+							Akan Berisikan Sebuah paragraf Penjelasan our services (service yang kami tawarkan)
+							</span>
+						</div>
+						<div>
+							<Lottie animationData={CustomerServices} loop={true} />
 						</div>
 						</div>
+					</div>
 					</Card>
 
 					<Card>
