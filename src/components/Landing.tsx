@@ -9,6 +9,9 @@ import { FaAudible, FaCircleDot, FaSortUp, FaTriangleExclamation } from "react-i
 import CardSwap, { Card } from "./CardSwap";
 import csAnimation from "../assets/Illustration/Customer_Support.json"
 import lottie from "lottie-web"
+import uiClean from "../assets/Illustration/ecommerce.json"
+import tanpaDataVerbose from "../assets/Illustration/Shopping_Cart_Loader.json"
+
 
 const imageLogos = [
   { src: "https://www.bi.go.id/id/SiteAssets/bi-b.png", alt: "Company 1", href: "https://company1.com" },
@@ -18,7 +21,7 @@ const imageLogos = [
   { src: "https://1000logos.net/wp-content/uploads/2022/08/JT-Express-Logo-500x281.png", alt: "J&T", href: "https://company3.com" },
 ];
 
-const CustomerServiceLottie = () => {
+const LottieAnimation = ({animasi}:{animasi:any}) => {
   const container = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -29,7 +32,7 @@ const CustomerServiceLottie = () => {
       renderer: "svg",
       loop: true,
       autoplay: true,
-      animationData: csAnimation,
+      animationData: animasi,
     })
 
     return () => anim.destroy()
@@ -41,57 +44,43 @@ const CustomerServiceLottie = () => {
 
 
 export const Navbar = () => {
-  const [hidden, setHidden] = useState(false); // untuk kontrol sembunyi / muncul
-  const [lastScroll, setLastScroll] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScroll = window.scrollY;
-
-      if (currentScroll > lastScroll && currentScroll > 80) {
-        setHidden(true);
-      } else {
-        setHidden(false);
-      }
-
-      setLastScroll(currentScroll);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScroll]);
-
   return (
-    <div
-      onMouseEnter={() => setHidden(false)} // kalau dihover, muncul lagi
-      onMouseLeave={() => {
-        if (window.scrollY > 80) setHidden(true); // kalau udah discroll jauh, boleh sembunyi lagi
-      }}
+    <header
       style={{ fontFamily: "'Inter', sans-serif" }}
-      className={`fixed top-0 left-0 w-full z-50 transition-transform duration-500 ${
-        hidden ? "-translate-y-[100%]" : "translate-y-0"
-      }`}
+      className="fixed top-0 left-0 w-full z-50 transition-transform duration-500 -translate-y-full translate-y-0"
     >
-      <nav className="flex flex-wrap items-center justify-between w-full h-auto md:h-[80px] px-6 md:px-12 py-4 bg-white shadow-sm">
+      <nav
+        className="flex flex-wrap items-center justify-between w-full h-auto md:h-[80px] px-6 md:px-12 py-4 bg-white shadow-sm"
+        aria-label="Main navigation"
+      >
         <div className="flex items-center font-sans">
-          <span className="text-xl md:text-2xl font-semibold text-gray-800 ml-2 md:ml-4">
+          <a href="/" className="text-xl md:text-2xl font-semibold text-gray-800 ml-2 md:ml-4">
             burung
-          </span>
+          </a>
         </div>
 
         <div className="flex items-center gap-4 md:gap-8 mt-4 md:mt-0">
-          <button className="bg-white text-black font-semibold hover:text-neutral-500 transition">
-            Log in?
-          </button>
-          <button className="p-2 md:p-3 text-white bg-neutral-800 hover:bg-neutral-700 font-semibold rounded-lg transition">
+          <a
+            href="/login"
+            className="bg-white text-black font-semibold hover:text-neutral-500 transition"
+            aria-label="Log in"
+          >
+            Log in
+          </a>
+          <a
+            href="/signup"
+            className="p-2 md:p-3 text-white bg-neutral-800 hover:bg-neutral-700 font-semibold rounded-lg transition"
+            aria-label="Sign Up"
+          >
             Sign Up
-          </button>
+          </a>
         </div>
       </nav>
       <hr className="border-slate-200" />
-    </div>
+    </header>
   );
 };
+
 
 interface PropsBarangCard {
   nama: string;
@@ -105,6 +94,34 @@ interface PropsBarangCard {
   gambar: string;
   rating: number; 
 }
+
+interface Overview {
+    rating: number;
+    community: number;
+    totalTransactions: number;
+    monthlyActiveUsers?: number;
+    supportedCategories?: number;
+    countriesSupported?: number;
+    revenue?: number;
+    lastUpdated?: string;
+	totalSellers: number;
+    totalProducts: number;
+}
+
+const overviewDummy: Overview = {
+    rating: 4.7,
+    community: 120000,
+    totalTransactions: 750000,
+    monthlyActiveUsers: 95000,
+    supportedCategories: 20,
+    countriesSupported: 1,
+    revenue: 12500000,
+    lastUpdated: "2025-10-20T19:00:00Z",
+	totalSellers: 5000,
+    totalProducts: 150000
+};
+
+
 
 const data: PropsBarangCard[] = [{
   nama: "Sepatu Adidas Samba",
@@ -168,9 +185,7 @@ const data: PropsBarangCard[] = [{
   },
 ];
 
-
-export const Hero1 = () => {
-	const CardBarang = ({data}: {data:PropsBarangCard}) => {
+const CardBarang = ({data}: {data:PropsBarangCard}) => {
 	return (
 		<div className="bg-white overflow-y-auto grid grid-cols-[30%_70%] overflow-hidden">
 		<div className="border-r border-slate-300 grid grid-rows-2">
@@ -270,143 +285,168 @@ export const Hero1 = () => {
 		</div>
 	);
 	};
-	return (
-		<div style={{ fontFamily: "'Inter', sans-serif" }} className="w-full min-h-[calc(100vh-100px)] grid grid-cols-1 md:grid-cols-2 py-10 px-6 md:px-16 font-sans">
-			{/* Kolom kiri */}
-			<div className="py-20 px-20 md:py-20 flex flex-col justify-center items-start text-center md:text-left">
-				<div>
-					<span className="text-4xl md:text-6xl text-neutral-800 leading-tight font-normal" style={{ fontFamily: "'Inter', sans-serif" }}>
-						Jual Beli Jadi <br className="hidden md:block" />Gampang
-					</span>
 
-					<br />
-					<br />
-					<span className="text-lg md:text-2xl text-neutral-500 font-medium mt-2 block" style={{ fontFamily: "'Inter', sans-serif" }}>
-						Bersama Burung Temukan Barang
-					</span>
-					<span className="text-lg md:text-2xl text-neutral-500 font-medium block" style={{ fontFamily: "'Inter', sans-serif" }}>
-						Incaranmu Dengan Usapan Jari
-					</span>
-				</div>
-
-				<div className="mt-8 grid grid-cols-2 gap-4 w-full md:w-auto">
-					<button className="bg-neutral-800 text-neutral-100 px-4 md:px-6 py-3 rounded-lg font-medium hover:bg-neutral-700 transition">Bergabung</button>
-					<button className="text-neutral-800 border border-slate-200 px-4 md:px-6 py-3 rounded-lg font-medium hover:bg-slate-50 transition">Tentang Kami</button>
-				</div>
-			</div>
-
-			{/* Kolom kanan */}
-			<div className="flex justify-center items-center mt-8 md:mt-0">
-				 <CardSwap
-					cardDistance={70}
-					verticalDistance={70}
-					delay={5000}
-					pauseOnHover={true}
-				>
-					<Card>
-						<div className="grid grid-rows-[10%_90%] h-full w-full border border-slate-200 rounded-t-xl shadow-sm overflow-hidden">
-						<div className="bg-neutral-50 border-b border-slate-200 flex items-center px-4">
-							<span className="text-neutral-700 font-medium text-sm">Top Brands Product</span>
-						</div>
-
-						<div className="w-[500px] h-[200px]">
-							<Swiper
-								modules={[FreeMode, Autoplay]}
-									spaceBetween={20}
-									slidesPerView={1}
-									freeMode={true}             // bisa digeser bebas
-									loop={true}                 // loop terus
-									speed={2000}                 // kecepatan animasi geser (ms)
-									autoplay={{
-										delay: 0,                 // tanpa jeda
-										disableOnInteraction: false,
-										pauseOnMouseEnter: true
-									}}
-									allowTouchMove={false}       // nonaktifkan drag manual
-									className="mySwiper space-x-2">
-									{data.map((val: PropsBarangCard, index: number) => (
-									<SwiperSlide>
-										<CardBarang key={index} data={val} />
-									</SwiperSlide>
-								))}
-							</Swiper>
-						</div>
-						</div>
-
-					</Card>
-
-					<Card>
-					<div className="grid grid-rows-[10%_90%] h-full w-full border border-slate-200 rounded-t-xl shadow-sm overflow-hidden">
-					{/* Header */}
-					<div className="bg-neutral-50 border-b border-slate-200 flex items-center px-4">
-						<span className="text-neutral-700 font-medium text-sm tracking-wide">Our Services</span>
-					</div>
-
-					{/* Body */}
-					<div className="grid grid-cols-[40%_60%] gap-4 p-4 w-full h-full">
-						{/* Left Text Section */}
-						<div className="text-xs font-sans text-neutral-600 leading-relaxed">
-							<p>
-								Kami selalu siap sedia 24 jam untuk mendengarkan setiap kebutuhan dan keluhan Anda.
-							</p>
-							<ul className="list-disc list-inside mt-3 space-y-1">
-								<li>Hubungi tim <strong>Client Service</strong> jika Anda mengalami kendala.</li>
-								<li>Layanan kami <strong>gratis tanpa pungutan biaya</strong> — laporkan bila ada pelanggaran.</li>
-								<li>Kenyamanan dan kepercayaan Anda adalah prioritas utama kami.</li>
-								<li>Jangan ragu untuk menghubungi kami kapan pun Anda membutuhkan bantuan.</li>
-							</ul>
-						</div>
-
-						{/* Right Lottie / Visual Section */}
-						<div className="bg-neutral-50 p-4 grid grid-rows-[65%_35%]">
-						<div className="flex items-start justify-start">
-							<CustomerServiceLottie />
-						</div>
-						<div className="mt-2">
-							<p className="text-sm font-medium font-sans text-neutral-700 tracking-wide">
-							Tim <span className="text-sky-600 font-semibold">Client Services</span> Burung
-							</p>
-							<p className="text-[10.5px] font-sans text-neutral-500 mt-1">
-							<strong>2025</strong> — Membangun pengalaman terbaik untuk klien
-							</p>
-						</div>
-						</div>
-
-
-					</div>
-					</div>
-
-					</Card>
-
-					<Card>
-						<div className="grid grid-rows-[10%_90%] h-full w-full border border-slate-200 rounded-t-xl shadow-sm overflow-hidden">
-						<div className="bg-neutral-50 border-b border-slate-200 flex items-center px-4">
-							<span className="text-neutral-700 font-medium text-sm">Overview</span>
-						</div>
-						</div>
-					</Card>
+	const CardOverview = ({data}: {data:Overview}) =>{
+		return(
+			<div className="grid grid-rows-3">
+				<div className="grid grid-cols-3">
 					
-				</CardSwap>
+				</div>
+				<div className="grid grid-cols-3">
+
+				</div>
+				<div className="grid grid-cols-3">
+
+				</div>
 			</div>
-		</div>
-	);
+		) 
+	}
+
+export const Hero1 = () => {
+  return (
+    <div
+      style={{ fontFamily: "'Inter', sans-serif" }}
+      className="w-full min-h-[calc(100vh-100px)] grid grid-cols-1 md:grid-cols-2 py-10 px-6 md:px-16 font-sans"
+    >
+      {/* Kolom kiri */}
+      <div className="py-20 px-20 md:py-20 flex flex-col justify-center items-start text-center md:text-left">
+        <div>
+          <h1 className="text-4xl md:text-6xl text-neutral-800 leading-tight font-normal" style={{ fontFamily: "'Inter', sans-serif" }}>
+            Jual Beli Jadi <br className="hidden md:block" />Gampang
+          </h1>
+
+          <h2 className="text-lg md:text-2xl text-neutral-500 font-medium mt-2 block" style={{ fontFamily: "'Inter', sans-serif" }}>
+            Bersama Burung Temukan Barang
+          </h2>
+          <h2 className="text-lg md:text-2xl text-neutral-500 font-medium block" style={{ fontFamily: "'Inter', sans-serif" }}>
+            Incaranmu Dengan Usapan Jari
+          </h2>
+        </div>
+
+        <div className="mt-8 grid grid-cols-2 gap-4 w-full md:w-auto">
+          <button className="bg-neutral-800 text-neutral-100 px-4 md:px-6 py-3 rounded-lg font-medium hover:bg-neutral-700 transition" aria-label="Bergabung">
+            Bergabung
+          </button>
+          <button className="text-neutral-800 border border-slate-200 px-4 md:px-6 py-3 rounded-lg font-medium hover:bg-slate-50 transition" aria-label="Tentang Kami">
+            Tentang Kami
+          </button>
+        </div>
+      </div>
+
+      {/* Kolom kanan */}
+      <div className="flex justify-center items-center mt-8 md:mt-0">
+        <CardSwap cardDistance={70} verticalDistance={70} delay={5000} pauseOnHover={true}>
+          <Card>
+            <div className="grid grid-rows-[10%_90%] h-full w-full border border-slate-200 rounded-t-xl shadow-sm overflow-hidden">
+              <header className="bg-neutral-50 border-b border-slate-200 flex items-center px-4">
+                <span className="text-neutral-700 font-medium text-sm">Top Brands Product</span>
+              </header>
+
+              <div className="w-[500px] h-[200px]">
+                <Swiper
+                  modules={[FreeMode, Autoplay]}
+                  spaceBetween={20}
+                  slidesPerView={1}
+                  freeMode={true}
+                  loop={true}
+                  speed={2000}
+                  autoplay={{
+                    delay: 0,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                  }}
+                  allowTouchMove={false}
+                  className="mySwiper space-x-2"
+                >
+                  {data.map((val: PropsBarangCard, index: number) => (
+                    <SwiperSlide key={index}>
+                      <CardBarang data={val} />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              </div>
+            </div>
+          </Card>
+
+          <Card>
+            <div className="grid grid-rows-[10%_90%] h-full w-full border border-slate-200 rounded-t-xl shadow-sm overflow-hidden">
+              <header className="bg-neutral-50 border-b border-slate-200 flex items-center px-4">
+                <span className="text-neutral-700 font-medium text-sm tracking-wide">Our Services</span>
+              </header>
+
+              <div className="grid grid-cols-[40%_60%] gap-4 p-4 w-full h-full">
+                <div className="text-xs font-sans text-neutral-600 leading-relaxed">
+                  <p>
+                    Kami selalu siap sedia 24 jam untuk mendengarkan setiap kebutuhan dan keluhan Anda.
+                  </p>
+                  <ul className="list-disc list-inside mt-3 space-y-1">
+                    <li>Hubungi tim <strong>Client Service</strong> jika Anda mengalami kendala.</li>
+                    <li>Layanan kami <strong>gratis tanpa pungutan biaya</strong> — laporkan bila ada pelanggaran.</li>
+                    <li>Kenyamanan dan kepercayaan Anda adalah prioritas utama kami.</li>
+                    <li>Jangan ragu untuk menghubungi kami kapan pun Anda membutuhkan bantuan.</li>
+                  </ul>
+                </div>
+
+                <div className="bg-neutral-50 p-4 grid grid-rows-[65%_35%]">
+                  <div className="flex items-start justify-start">
+                    <LottieAnimation animasi={csAnimation} />
+                  </div>
+                  <div className="mt-2">
+                    <p className="text-sm font-medium font-sans text-neutral-700 tracking-wide">
+                      Tim <span className="text-sky-600 font-semibold">Client Services</span> Burung
+                    </p>
+                    <p className="text-[10.5px] font-sans text-neutral-500 mt-1">
+                      <strong>2025</strong> — Membangun pengalaman terbaik untuk klien
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          <Card>
+            <div className="grid grid-rows-[10%_90%] h-full w-full border border-slate-200 rounded-t-xl shadow-sm overflow-hidden">
+              <header className="bg-neutral-50 border-b border-slate-200 flex items-center px-4">
+                <span className="text-neutral-700 font-medium text-sm">Overview</span>
+              </header>
+            </div>
+          </Card>
+        </CardSwap>
+      </div>
+    </div>
+  );
 };
+
 
 export const Hero2 = () => {
-	return (
-		<>
-			<div className="mt-10 h-screen w-full items-left px-36 py-10" style={{ fontFamily: "'Inter', sans-serif" }}>
-				<div className="text-neutral-500 font-medium text-xl font-sans">Our Points</div>
-				<div className="mt-8 text-neutral-800 font-bold text-5xl font-Inter">Platform e-commerce untuk semua kebutuhanmu.</div>
-				<div className="mt-8 text-lg font-medium text-neutral-500">Di Burung, kami percaya pengalaman belanja online seharusnya sederhana. Kamu cukup mencari produk yang dibutuhkan, menambahkannya ke keranjang, dan menyelesaikan pembayaran dengan aman. Tidak ada langkah yang rumit, tidak ada iklan yang mengganggu. Semua dirancang agar kamu bisa fokus pada apa yang penting — menemukan produk dengan cepat, membandingkan harga dengan jelas, dan menerima barang tepat waktu. Burung dibuat untuk memudahkan, bukan membingungkan.</div>
+  return (
+    <section
+      aria-label="Our Points"
+      className="mt-10 h-screen w-full items-left px-36 py-10"
+      style={{ fontFamily: "'Inter', sans-serif" }}
+    >
+      <p className="text-neutral-500 font-medium text-xl font-sans">Our Points</p>
 
-				<div className="flex justify-end mt-8">
-					<button className="border text-neutral-500 font-medium border-slate-200 rounded-xl p-3 hover:bg-slate-50 transition">Yang Kami Tawarkan</button>
-				</div>
-			</div>
-		</>
-	);
+      <h2 className="mt-8 text-neutral-800 font-semibold text-5xl font-sans">
+        Platform e-commerce untuk semua kebutuhanmu.
+      </h2>
+
+      <p className="mt-8 text-lg font-medium text-neutral-500">
+        Di Burung, kami percaya pengalaman belanja online seharusnya sederhana. Kamu cukup mencari produk yang dibutuhkan, menambahkannya ke keranjang, dan menyelesaikan pembayaran dengan aman. Tidak ada langkah yang rumit, tidak ada iklan yang mengganggu. Semua dirancang agar kamu bisa fokus pada apa yang penting — menemukan produk dengan cepat, membandingkan harga dengan jelas, dan menerima barang tepat waktu. Burung dibuat untuk memudahkan, bukan membingungkan.
+      </p>
+
+      <div className="flex justify-end mt-8">
+        <button
+          className="border text-neutral-500 font-medium border-slate-200 rounded-xl p-3 hover:bg-slate-50 transition"
+          aria-label="Yang Kami Tawarkan"
+        >
+          Yang Kami Tawarkan
+        </button>
+      </div>
+    </section>
+  );
 };
+
 
 export const Hero3 = () => {
 	return (
@@ -454,7 +494,7 @@ export const Hero3 = () => {
 						</div>
 
 						<div className="flex justify-center items-center h-full w-full p-4">
-							<img src="src/assets/LogoBurung.svg" alt="Logo Burung" className="w-auto h-full max-h-[300px] object-contain" />
+							<LottieAnimation animasi={uiClean} />
 						</div>
 					</div>
 				</div>
@@ -474,7 +514,7 @@ export const Hero3 = () => {
 						</div>
 
 						<div className="flex justify-center items-center h-full w-full p-4">
-							<img src="src/assets/LogoBurung.svg" alt="Logo Burung" className="w-auto h-full max-h-[300px] object-contain" />
+							<LottieAnimation animasi={tanpaDataVerbose} />
 						</div>
 					</div>
 				</div>
@@ -515,34 +555,34 @@ export const Hero4 = () => {
 			<div className="grid grid-rows-3 gap-6">
 				{/* Step 1 */}
 				{/* Step 1 */}
-<div className="bg-neutral-200 p-6 rounded-xl shadow-sm hover:shadow-md transition" style={{ fontFamily: "'Inter', sans-serif" }}>
-  <div className="flex items-center text-xl mb-2 text-neutral-800 font-medium gap-2">
-    <FaCircle className="text-neutral-600" /> Login One Tap
-  </div>
-  <p className="text-lg font-light text-neutral-400">
-    Burung menyediakan login one tap auth tanpa muluk-muluk — ribet masukin kredensial kamu deh.
-  </p>
-</div>
+				<div className="bg-neutral-200 p-6 rounded-xl shadow-sm hover:shadow-md transition" style={{ fontFamily: "'Inter', sans-serif" }}>
+				<div className="flex items-center text-xl mb-2 text-neutral-800 font-medium gap-2">
+					<FaCircle className="text-neutral-600" /> Login One Tap
+				</div>
+				<p className="text-lg font-light text-neutral-400">
+					Burung menyediakan login one tap auth tanpa muluk-muluk — ribet masukin kredensial kamu deh.
+				</p>
+				</div>
 
-{/* Step 2 */}
-<div className="bg-neutral-200 p-6 rounded-xl shadow-sm hover:shadow-md transition" style={{ fontFamily: "'Inter', sans-serif" }}>
-  <div className="flex items-center text-xl mb-2 text-neutral-800 font-medium gap-2">
-    <FaTriangleExclamation className="text-neutral-600" /> Cari Barang
-  </div>
-  <p className="text-lg text-neutral-400 font-normal">
-    Burung menerapkan persortiran yang sesuai selera kamu banget.
-  </p>
-</div>
+				{/* Step 2 */}
+				<div className="bg-neutral-200 p-6 rounded-xl shadow-sm hover:shadow-md transition" style={{ fontFamily: "'Inter', sans-serif" }}>
+				<div className="flex items-center text-xl mb-2 text-neutral-800 font-medium gap-2">
+					<FaTriangleExclamation className="text-neutral-600" /> Cari Barang
+				</div>
+				<p className="text-lg text-neutral-400 font-normal">
+					Burung menerapkan persortiran yang sesuai selera kamu banget.
+				</p>
+				</div>
 
-{/* Step 3 */}
-<div className="bg-neutral-200 p-6 rounded-xl shadow-sm hover:shadow-md transition" style={{ fontFamily: "'Inter', sans-serif" }}>
-  <div className="flex items-center text-xl mb-2 text-neutral-800 font-medium gap-2">
-    <FaTrophy className="text-neutral-600" /> Beli Deh
-  </div>
-  <p className="text-lg text-neutral-400 font-normal">
-    Gausah repot mikirin barang nyampe gimana — semua Burung yang handle.
-  </p>
-</div>
+				{/* Step 3 */}
+				<div className="bg-neutral-200 p-6 rounded-xl shadow-sm hover:shadow-md transition" style={{ fontFamily: "'Inter', sans-serif" }}>
+				<div className="flex items-center text-xl mb-2 text-neutral-800 font-medium gap-2">
+					<FaTrophy className="text-neutral-600" /> Beli Deh
+				</div>
+				<p className="text-lg text-neutral-400 font-normal">
+					Gausah repot mikirin barang nyampe gimana — semua Burung yang handle.
+				</p>
+				</div>
 
 			</div>
 		</div>
@@ -823,59 +863,71 @@ export const Heroes = () => {
 
 export const Footer = () => {
   return (
-    <div className="bg-neutral-50 text-neutral-800 px-16 py-10 font-sans mt-10">
+    <footer className="bg-neutral-50 text-neutral-800 px-16 py-10 font-sans mt-10">
       <div className="grid md:grid-cols-2 gap-8">
         {/* Kiri: Logo & Deskripsi */}
         <div className="space-y-4">
           <div>
-            <span className="text-2xl font-semibold font-sans">Burung 2025</span>
+            <a href="/" className="text-2xl font-semibold font-sans">
+              Burung 2025
+            </a>
             <p className="text-neutral-500 text-sm mt-1">
               Temukan produk yang kamu cari, bandingkan dengan mudah, dan dapatkan tanpa drama.
             </p>
           </div>
           <div className="flex space-x-3 text-base text-neutral-500">
-            <FaInstagram className="hover:text-pink-500 transition-colors cursor-pointer" />
-            <FaLinkedin className="hover:text-blue-600 transition-colors cursor-pointer" />
-            <FaTwitter className="hover:text-blue-400 transition-colors cursor-pointer" />
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <FaInstagram className="hover:text-pink-500 transition-colors cursor-pointer" />
+            </a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <FaLinkedin className="hover:text-blue-600 transition-colors cursor-pointer" />
+            </a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+              <FaTwitter className="hover:text-blue-400 transition-colors cursor-pointer" />
+            </a>
           </div>
         </div>
 
         {/* Kanan: Links */}
-        <div className="grid grid-cols-3 text-sm text-neutral-500 pl-50 width-[500px]">
-          <div>
-            <h3 className="text-base font-medium mb-2 text-neutral-800">Features</h3>
-            <div className="space-y-1">
-              <div>Core features</div>
-              <div>Pro experience</div>
-              <div>Integrations</div>
-            </div>
-          </div>
+		<nav
+  className="grid grid-cols-3 gap-8 text-sm text-neutral-500"
+  aria-label="Footer Navigation"
+>
+  <div>
+    <h3 className="text-base font-medium mb-2 text-neutral-800">Features</h3>
+    <ul className="space-y-1">
+      <li><a href="/features/core" className="hover:underline">Core features</a></li>
+      <li><a href="/features/pro" className="hover:underline">Pro experience</a></li>
+      <li><a href="/features/integrations" className="hover:underline">Integrations</a></li>
+    </ul>
+  </div>
 
-          <div>
-            <h3 className="text-base font-medium mb-2 text-neutral-800">Learn more</h3>
-            <div className="space-y-1">
-              <div>Blog</div>
-              <div>Case studies</div>
-              <div>Customer stories</div>
-              <div>Best practices</div>
-            </div>
-          </div>
+  <div>
+    <h3 className="text-base font-medium mb-2 text-neutral-800">Learn more</h3>
+    <ul className="space-y-1">
+      <li><a href="/blog" className="hover:underline">Blog</a></li>
+      <li><a href="/case-studies" className="hover:underline">Case studies</a></li>
+      <li><a href="/customers" className="hover:underline">Customer stories</a></li>
+      <li><a href="/best-practices" className="hover:underline">Best practices</a></li>
+    </ul>
+  </div>
 
-          <div>
-            <h3 className="text-base font-medium mb-2 text-neutral-800">Support</h3>
-            <div className="space-y-1">
-              <div>Contact</div>
-              <div>Support</div>
-              <div>Legal</div>
-            </div>
-          </div>
-        </div>
+  <div>
+    <h3 className="text-base font-medium mb-2 text-neutral-800">Support</h3>
+    <ul className="space-y-1">
+      <li><a href="/contact" className="hover:underline">Contact</a></li>
+      <li><a href="/support" className="hover:underline">Support</a></li>
+      <li><a href="/legal" className="hover:underline">Legal</a></li>
+    </ul>
+  </div>
+</nav>
+
       </div>
 
       {/* Bottom line */}
       <div className="mt-8 border-t border-neutral-200 pt-4 text-neutral-400 text-xs text-center">
         &copy; 2025 Burung. All rights reserved.
       </div>
-    </div>
+    </footer>
   );
 };
