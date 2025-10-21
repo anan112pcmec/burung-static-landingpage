@@ -4,8 +4,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import LogoLoop from "./LogoLoop";
 import { Autoplay, FreeMode } from "swiper/modules";
 import "swiper/swiper.css"
-import { FaArchive, FaBarcode, FaCalendar, FaCalendarAlt, FaChartBar, FaCircle, FaComment, FaFileArchive, FaHeart, FaInfo, FaInstagram, FaLinkedin, FaMale, FaShare, FaStar, FaTrophy, FaTwitter } from "react-icons/fa";
-import { FaAudible, FaCircleDot, FaSortUp, FaTriangleExclamation } from "react-icons/fa6";
+import { FaArchive, FaBarcode, FaCalendar, FaCalendarAlt, FaChartBar, FaCircle, FaComment, FaFileArchive, FaGlobe, FaHeart, FaInfo, FaInstagram, FaLinkedin, FaMale, FaShare, FaStar, FaStarHalf, FaTrophy, FaTwitter, FaUser } from "react-icons/fa";
+import { FaAudible, FaCircleDot, FaPersonMilitaryToPerson, FaSortUp, FaTriangleExclamation, FaUnlockKeyhole } from "react-icons/fa6";
 import CardSwap, { Card } from "./CardSwap";
 import csAnimation from "../assets/Illustration/Customer_Support.json"
 import lottie from "lottie-web"
@@ -302,6 +302,67 @@ const CardBarang = ({data}: {data:PropsBarangCard}) => {
 		) 
 	}
 
+export const Overview = () => {
+  return (
+    <section
+      className="w-full h-full mx-auto bg-white rounded-2xl shadow-sm p-6 md:p-8 transition-all duration-300 hover:shadow-md"
+      role="region"
+      aria-label="Overview Section"
+    >
+      {/* Bagian ikon */}
+       <div className="grid grid-cols-3 sm:grid-cols-6 gap-6 text-neutral-700 text-xl place-items-center mb-4">
+        <div className="flex flex-col items-center" aria-label="User overview icon">
+          <FaUser title="User" />
+          <span className="text-lg font-semibold text-neutral-800 mt-1">1.2K</span>
+          <span className="text-xs text-neutral-500 mt-0.5">User</span>
+        </div>
+
+        <div className="flex flex-col items-center" aria-label="Global access icon">
+          <FaGlobe title="Global Access" />
+          <span className="text-lg font-semibold text-neutral-800 mt-1">1</span>
+          <span className="text-xs text-neutral-500 mt-0.5">Negara</span>
+        </div>
+
+        <div className="flex flex-col items-center" aria-label="Rating icons">
+          <div className="flex space-x-1">
+            <FaStar title="Full Star" />
+            <FaStarHalf title="Half Star" />
+          </div>
+          <span className="text-lg font-semibold text-neutral-800 mt-1">4.7</span>
+          <span className="text-xs text-neutral-500 mt-0.5">Rating</span>
+        </div>
+
+        <div className="flex flex-col items-center" aria-label="Security icon">
+          <FaUnlockKeyhole title="Secure" />
+          <span className="text-lg font-semibold text-neutral-800 mt-1">99%</span>
+          <span className="text-xs text-neutral-500 mt-0.5">Secure</span>
+        </div>
+
+        <div className="flex flex-col items-center" aria-label="Archive icon">
+          <FaFileArchive title="Archive" />
+          <span className="text-lg font-semibold text-neutral-800 mt-1">320</span>
+          <span className="text-xs text-neutral-500 mt-0.5">Archive</span>
+        </div>
+
+        <div className="flex flex-col items-center" aria-label="Team icon">
+          <FaPersonMilitaryToPerson title="Team Support" />
+          <span className="text-lg font-semibold text-neutral-800 mt-1">12</span>
+          <span className="text-xs text-neutral-500 mt-0.5">Team</span>
+        </div>
+      </div>
+
+      {/* Deskripsi */}
+      <br />
+      <p className="text-sm md:text-base font-sans text-neutral-600 leading-relaxed " aria-label="Overview description">
+        Overview ini memberikan gambaran singkat mengenai sistem dan fitur utama aplikasi, mulai dari manajemen pengguna, keamanan,
+        hingga dukungan tim dan arsip data yang efisien. Dibangun untuk memberikan pengalaman modern, ringan, dan mudah digunakan.
+      </p>
+    </section>
+  );
+};
+
+
+
 export const Hero1 = () => {
   return (
     <div
@@ -409,6 +470,9 @@ export const Hero1 = () => {
               <header className="bg-neutral-50 border-b border-slate-200 flex items-center px-4">
                 <span className="text-neutral-700 font-medium text-sm">Overview</span>
               </header>
+              <div>
+                <Overview/>
+              </div>
             </div>
           </Card>
         </CardSwap>
